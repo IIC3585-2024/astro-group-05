@@ -1,0 +1,70 @@
+---
+import { supabase } from "../../../lib/supabase";
+import ReviewCard from "../../../components/ReviewCard.astro";
+import NewReview from "../../../components/NewReview.astro";
+
+const { id } = Astro.params;
+export async function getSerieById(id: string) {
+  const { data, error } = await supabase
+    .from("series")
+    .select("*, reviews(*)")
+    .eq("id", id);
+  return { data, error };
+}
+
+const { data } = await getSerieById(id as string);
+const serie = data?.[0];
+
+const averageRating = (
+  serie.reviews.reduce((acc: number, review: any) => acc + review.stars, 0) /
+  serie.reviews.length
+).toFixed(2);
+---
+
+<div class="p-8 bg-white shadow-md rounded-lg">
+  <h1 class="text-3xl font-bold mb-4">{serie.title}</h1>
+  <div class="flex justify-between items-center">
+    <img
+      src={serie.imageUrl || "/placeholder.jpeg"}
+      alt="Placeholder"
+      width={200}
+      height={300}
+      class="rounded-lg"
+    />
+    <p class="mb-4">{serie.description}</p>
+  </div>
+  <p class="mb-2">
+    <strong>Servicios de streaming</strong>
+    {serie.streamingService}
+  </p>
+  <p class="mb-2">
+    <strong>Temporadas:</strong>
+    {serie.seasons}
+  </p>
+  <p class="mb-2">
+    <strong>Episodios por temporada:</strong>
+    {serie.episodesPerSeason}
+  </p>
+  <p class="mb-4">
+    <strong>Categoría:</strong>
+    {serie.category}
+  </p>
+  <p>
+    ⭐️ {averageRating} ({serie.reviews.length})
+  </p>
+
+  <h2 class="text-2xl font-bold mb-4">Reseñas</h2>
+  <div>
+    <NewReview serieId={serie.id} />
+  </div>
+  {
+    serie.reviews.map((review: any) => (
+      <ReviewCard
+        id={review.id}
+        title={review.title}
+        content={review.content}
+        stars={review.stars}
+      />
+    ))
+  }
+</div>

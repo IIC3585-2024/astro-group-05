@@ -1,0 +1,66 @@
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+  <form
+    class="w-full max-w-lg p-8 space-y-4 bg-white rounded shadow-md"
+    action="/api/series"
+    method="POST"
+  >
+    <h2 class="text-2xl font-bold text-center">Agregar Serie</h2>
+    <div class="flex flex-col space-y-4">
+      <input
+        type="text"
+        name="title"
+        id="title"
+        placeholder="Título"
+        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-indigo-200"
+      />
+      <input
+        type="text"
+        name="streamingService"
+        id="streamingService"
+        placeholder="Servicio de streaming"
+        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-indigo-200"
+      />
+      <input
+        type="number"
+        name="seasons"
+        id="seasons"
+        placeholder="Temporadas"
+        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-indigo-200"
+      />
+      <input
+        type="number"
+        name="episodesPerSeason"
+        id="episodesPerSeason"
+        placeholder="Episodios por temporada"
+        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-indigo-200"
+      />
+      <input
+        type="text"
+        name="description"
+        id="description"
+        placeholder="Descripción"
+        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-indigo-200"
+      />
+      <input
+        type="text"
+        name="category"
+        id="category"
+        placeholder="Categoría"
+        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-indigo-200"
+      />
+      <input
+        type="text"
+        name="imageUrl"
+        id="imageUrl"
+        placeholder="URL de la imagen"
+        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-indigo-200"
+      />
+      <button
+        class="px-4 py-2 font-bold text-white bg-indigo-500 rounded hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-200"
+        type="submit"
+      >
+        Agregar serie
+      </button>
+    </div>
+  </form>
+</div>

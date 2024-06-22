@@ -1,0 +1,22 @@
+---
+export interface Props {
+  id: string;
+  title: string;
+  content: string;
+  stars: number;
+}
+
+const {
+  id,
+  title,
+  content,
+  stars,
+} = Astro.props;
+---
+<div class="mb-6 p-4 border border-gray-200 rounded-lg">
+  <h3 class="text-xl font-semibold mb-2">{title}</h3>
+  <p class="mb-2">{content}</p>
+  <p>
+    <strong>Rating:</strong> {stars}
+  </p>
+</div>

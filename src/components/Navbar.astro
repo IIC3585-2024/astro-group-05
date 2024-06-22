@@ -1,0 +1,50 @@
+---
+import { supabase } from "../lib/supabase";
+
+const { cookies, redirect } = Astro;
+
+const accessToken = cookies.get("sb-access-token");
+const refreshToken = cookies.get("sb-refresh-token");
+
+let user = null;
+if (accessToken && refreshToken) {
+  const { data, error } = await supabase.auth.setSession({
+    refresh_token: refreshToken.value,
+    access_token: accessToken.value,
+  });
+
+  if (error) {
+    cookies.delete("sb-access-token", {
+      path: "/",
+    });
+    cookies.delete("sb-refresh-token", {
+      path: "/",
+    });
+  } else {
+    user = data.user;
+  }
+}
+
+---
+
+<div class="sticky top-0 z-50 flex items-center justify-between w-full h-16 px-4 bg-white shadow-md">
+  <div class="flex items-center">
+    <p class="text-lg font-bold">Rotten&apos;tomatoes</p>
+  </div>
+  <div class="flex items-center space-x-4">
+    <a href="/series">Series</a>
+    {user ? (
+      <>
+        <p>{user.email}</p>
+        <form action="/api/auth/signout" method="get">
+          <button type="submit">Cerrar sesión</button>
+        </form>
+      </>
+    ) : (
+      <>
+        <a href="/auth/login">Iniciar sesión</a>
+        <a href="/auth/signup">Registrarse</a>
+      </>
+    )}
+  </div>
+</div>
