@@ -2,6 +2,7 @@
 import { supabase } from "../../../lib/supabase";
 import ReviewCard from "../../../components/ReviewCard.astro";
 import NewReview from "../../../components/NewReview.astro";
+import { Image } from 'astro:assets';
 
 const { id } = Astro.params;
 export async function getSerieById(id: string) {
@@ -24,12 +25,14 @@ const averageRating = (
 <div class="p-8 bg-white shadow-md rounded-lg">
   <h1 class="text-3xl font-bold mb-4">{serie.title}</h1>
   <div class="flex justify-between items-center">
-    <img
+    <Image
       src={serie.imageUrl || "/placeholder.jpeg"}
       alt="Placeholder"
       width={200}
       height={300}
       class="rounded-lg"
+      format="avif"
+      quality={'mid'}
     />
     <p class="mb-4">{serie.description}</p>
   </div>
