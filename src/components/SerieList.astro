@@ -14,9 +14,6 @@ export async function getSeries({
   category: string;
   platform: string;
 }) {
-  
-
-  
   let querySelect = "*,reviews(stars)";
   if (category !== "") {
     querySelect += ",series_genres!inner(*, genre!inner(*))";
