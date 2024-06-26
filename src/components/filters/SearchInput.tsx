@@ -7,7 +7,7 @@ export default function SearchInput() {
                 type="text"
                 placeholder="Buscar serie..."
                 className="p-2 rounded w-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                defaultValue={ value || ''}
+                defaultValue={ value || '' }
                 name="search"
                 id="search"
             />

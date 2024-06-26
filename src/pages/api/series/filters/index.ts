@@ -12,8 +12,8 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     if (formData.get("category") != "Categoría") {
         url += `category=${formData.get("category")}&`
     }
-    if (formData.get("stars") != "Estrellas") {
+    if (formData.get("stars") != "Calificación") {
         url += `stars=${formData.get("stars")}&`
     }
-  return redirect(url);
+    return redirect(url);
 };
