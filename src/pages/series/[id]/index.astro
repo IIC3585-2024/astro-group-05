@@ -1,73 +1,113 @@
 ---
+import Layout from "../../../layouts/Layout.astro";
 import { supabase } from "../../../lib/supabase";
-import ReviewCard from "../../../components/ReviewCard.astro";
-import NewReview from "../../../components/NewReview.astro";
-import { Image } from 'astro:assets';
+import ReviewCard from "../../../components/reviews/ReviewCard.astro";
+import NewReview from "../../../components/reviews/NewReview";
+import { Image } from "astro:assets";
+import SeasonTable from "../../../components/series/seasons/SeasonTable.astro";
+import GenreTag from "../../../components/series/GenreTag.astro";
+import PlatformList from "../../../components/series/platforms/PlatformList.astro";
 
 const { id } = Astro.params;
 export async function getSerieById(id: string) {
   const { data, error } = await supabase
     .from("series")
-    .select("*, reviews(*)")
+    .select(
+      `*,
+      reviews(*),
+      seasons(*),
+      series_platforms(*,
+        platforms(*)),
+      series_genres(*,
+        genre(*))
+      `
+    )
     .eq("id", id);
   return { data, error };
 }
 
 const { data } = await getSerieById(id as string);
-const serie = data?.[0];
+const { data: userData, error: userError } = await supabase.auth.getUser();
 
+const serie = data?.[0];
+const imgUrl = serie.imageUrl ? serie.imageUrl : "/placeholder.jpeg";
+const reviewslength = serie?.reviews?.length;
 const averageRating = (
   serie.reviews.reduce((acc: number, review: any) => acc + review.stars, 0) /
-  serie.reviews.length
+  reviewslength
 ).toFixed(2);
 ---
 
-<div class="p-8 bg-white shadow-md rounded-lg">
-  <h1 class="text-3xl font-bold mb-4">{serie.title}</h1>
-  <div class="flex justify-between items-center">
-    <Image
-      src={serie.imageUrl || "/placeholder.jpeg"}
-      alt="Placeholder"
-      width={200}
-      height={300}
-      class="rounded-lg"
-      format="avif"
-      quality={'mid'}
-    />
-    <p class="mb-4">{serie.description}</p>
-  </div>
-  <p class="mb-2">
-    <strong>Servicios de streaming</strong>
-    {serie.streamingService}
-  </p>
-  <p class="mb-2">
-    <strong>Temporadas:</strong>
-    {serie.seasons}
-  </p>
-  <p class="mb-2">
-    <strong>Episodios por temporada:</strong>
-    {serie.episodesPerSeason}
-  </p>
-  <p class="mb-4">
-    <strong>Categoría:</strong>
-    {serie.category}
-  </p>
-  <p>
-    ⭐️ {averageRating} ({serie.reviews.length})
-  </p>
+<Layout title="serie">
+  <div class="p-8 bg-white shadow-md rounded-lg">
+    <h1 class="text-3xl font-bold mb-4 text-center sm:text-left">
+      {serie.title}
+    </h1>
+    <div class="flex flex-col sm:flex-row items-center sm:items-start">
+      <div class="flex flex-col sm:mr-6">
+        <Image
+          src={imgUrl}
+          alt="Placeholder"
+          width={200}
+          height={300}
+          class="rounded-lg"
+        />
+        <SeasonTable seasons={serie?.seasons} />
+      </div>
+      <div class="flex flex-col">
+        <p class="mb-4">{serie.description}</p>
+        <p class="my-4">
+          <strong>Categoría</strong>
+          {serie.category}
+        </p>
+        <div class="flex flex-wrap mb-4">
+          {
+            serie?.series_genres?.map((genre: any) => (
+              <GenreTag key={genre.id} genre={genre.genre.genre} />
+            ))
+          }
+        </div>
+        <p class="my-4">
+          <strong>Plataformas</strong>
+        </p>
+        <PlatformList platforms={serie.series_platforms} />
+      </div>
+    </div>
 
-  <h2 class="text-2xl font-bold mb-4">Reseñas</h2>
-  <div>
-    <NewReview serieId={serie.id} />
+    <h2 class="text-3xl font-bold my-4">
+      Reseñas{" "}
+      <Image
+        src="/tomatoe.svg"
+        alt="tomatoe"
+        width={30}
+        height={30}
+        class="inline-block self-center items-center hover:animate-spin"
+      />{" "}
+      {averageRating} ({reviewslength})
+    </h2>
+    {
+      userData?.user && (
+        <div>
+          <NewReview
+            client:only="react"
+            serieId={serie.id}
+          />
+        </div>
+      )
+    }
+    {
+      serie.reviews.length !== 0 ? (
+        serie?.reviews?.map((review: any) => (
+          <ReviewCard
+            id={review.id}
+            title={review.title}
+            content={review.content}
+            stars={review.stars}
+          />
+        ))
+      ) : (
+        <div class="text-gray-500 mt-8 ml-3">No hay reseñas</div>
+      )
+    }
   </div>
-  {
-    serie.reviews.map((review: any) => (
-      <ReviewCard
-        id={review.id}
-        title={review.title}
-        content={review.content}
-        stars={review.stars}
-      />
-    ))
-  }
-</div>
+</Layout>

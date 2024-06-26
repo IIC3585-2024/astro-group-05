@@ -1,14 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Auth from "../../components/Auth.astro";
-const { cookies, redirect } = Astro;
 
-const accessToken = cookies.get("sb-access-token");
-const refreshToken = cookies.get("sb-refresh-token");
-
-if (accessToken && refreshToken) {
-  return redirect("/");
-}
 ---
 
 <Layout title="Sign in">

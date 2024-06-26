@@ -9,7 +9,5 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     content: formData.get("content"),
     stars: Number(formData.get("stars")),
   });
-  console.log(data);
-  console.log(error);
   return redirect(`/series/${formData.get("serieId")}`);
 };

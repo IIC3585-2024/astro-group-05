@@ -1,0 +1,94 @@
+---
+import SerieCard from "./SerieCard.astro";
+
+import { supabase } from "../lib/supabase";
+import { PostgrestFilterBuilder } from "@supabase/postgrest-js";
+
+
+export async function getSeries({
+  search,
+  category,
+  platform,
+}: {
+  search: string;
+  category: string;
+  platform: string;
+}) {
+  
+
+  
+  let querySelect = "*,reviews(stars)";
+  if (category !== "") {
+    querySelect += ",series_genres!inner(*, genre!inner(*))";
+  } else {
+    querySelect += ",series_genres(*, genre(*))";
+  }
+  if (platform !== "") {
+    querySelect += ",series_platforms!inner(*, platforms!inner(*))";
+  }
+
+  let query = supabase
+    .from("series")
+    .select(querySelect) as PostgrestFilterBuilder<any, any, any, any, any>;
+
+  if (search !== "") {
+    query = query.ilike("title", `%${search}%`);
+  }
+  if (category !== "") {
+    query = query.eq("series_genres.genre.genre", category);
+  }
+  if (platform !== "") {
+    query = query.eq("series_platforms.platforms.platform", platform);
+  }
+
+  const { data: series, error } = await query.order("title", {
+    ascending: true,
+  });
+
+  return { series, error };
+}
+
+interface Props {
+  search: string;
+  stars: number;
+  category: string;
+  platform: string;
+}
+
+const { search, stars, category, platform } = Astro.props as Props;
+
+const { series, error } = await getSeries({ search, category, platform });
+let filteredSeries = series;
+if (stars !== -1) {
+  filteredSeries = series.filter(
+    (serie: any) =>
+      serie.reviews.reduce(
+        (acc: number, review: any) => acc + review.stars,
+        0
+      ) /
+        serie.reviews.length >
+      stars
+  );
+}
+---
+
+<div class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 p-4">
+  {
+    filteredSeries?.map((serie: any) => (
+      <SerieCard
+        id={serie.id}
+        title={serie.title}
+        description={serie.description}
+        genres={serie.series_genres}
+        stars={(
+          serie.reviews.reduce(
+            (acc: number, review: any) => acc + review.stars,
+            0
+          ) / serie.reviews.length
+        ).toFixed(2)}
+        starsCount={serie.reviews.length}
+        imageUrl={serie.imageUrl}
+      />
+    ))
+  }
+</div>

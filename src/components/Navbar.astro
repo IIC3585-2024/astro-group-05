@@ -1,5 +1,6 @@
 ---
 import { supabase } from "../lib/supabase";
+import { Image } from "astro:assets";
 
 const { cookies, redirect } = Astro;
 
@@ -29,7 +30,15 @@ if (accessToken && refreshToken) {
 
 <div class="sticky top-0 z-50 flex items-center justify-between w-full h-16 px-4 bg-white shadow-md">
   <div class="flex items-center">
-    <p class="text-lg font-bold">Rotten&apos;tomatoes</p>
+    <a href="/">
+        <Image
+          src="/logo.png"
+          alt="Logo"
+          width={40}
+          height={40}
+          class="cursor-pointer"
+        />
+    </a>
   </div>
   <div class="flex items-center space-x-4">
     <a href="/series">Series</a>

@@ -1,0 +1,11 @@
+---
+export interface SeasonItemProps {
+    genre: string
+}
+
+const { genre } = Astro.props as SeasonItemProps;
+---
+
+<div class="bg-gray-200 text-gray-700 text-sm font-semibold rounded-full px-3 py-1">
+    {genre}
+</div>

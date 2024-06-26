@@ -1,13 +1,10 @@
 ---
-import { Image } from 'astro:assets';
+import { Image } from "astro:assets";
 export interface Props {
   id: string;
   title: string;
-  streamingService: string;
-  seasons: number;
-  episodesPerSeason: number;
   description: string;
-  category: string;
+  genres: { id: string; genre: { genre: string } }[];
   stars: string;
   starsCount: number;
   imageUrl?: string;
@@ -16,38 +13,50 @@ export interface Props {
 const {
   id,
   title,
-  streamingService,
-  seasons,
-  episodesPerSeason,
   description,
-  category,
+  genres,
   stars,
   starsCount,
-  imageUrl = "/placeholder.jpeg"
+  imageUrl = "/placeholder.jpeg",
 } = Astro.props;
+const isUrl = imageUrl?.startsWith("http");
 ---
 
 <a href={`/series/${id}`}>
-  <div class="flex flex-col items-center justify-between gap-2 p-2 bg-white shadow-md rounded-lg">
-    <Image
-      src={imageUrl}
-      alt="Placeholder"
-      width="200"
-      height="300"
-      class="rounded-lg"
-      format="avif"
-      quality="mid"
-    />
-    <div class="flex flex-col justify-between gap-2">
+  <div
+    class="flex flex-col justify-between gap-2 p-2 bg-white shadow-md rounded-lg h-full transform duration-300 hover:scale-105 hover:bg-gray-200"
+  >
+    <div class="flex flex-col gap-2 self-center">
+      <Image
+        src={isUrl ? imageUrl : '/placeholder.jpeg'}
+        alt="Placeholder"
+        width={200}
+        height={300}
+        class="rounded-lg"
+      />
       <h2 class="text-xl font-bold text-center">{title}</h2>
-      <p class="text-sm">{streamingService}</p>
-      <p class="text-sm">Temporadas: {seasons}</p>
-      <p class="text-sm">Episodios por temporada: {episodesPerSeason}</p>
-      <p class="text-sm">{description.slice(0, 50)}...</p>
-      <div class="flex justify-between">
-        <p class="text-sm">{category}</p>
-        <p class="text-sm">⭐️ {stars} ({starsCount})</p>
-      </div>
+    </div>
+    <p class="text-sm self-center">{description.slice(0, 50)}...</p>
+    <div class="flex gap-1 flex-wrap">
+      {
+        genres?.map((genre) => (
+          <div class="bg-gray-300 rounded-lg p-0.5">
+            <p class="text-sm">{genre.genre.genre}</p>
+          </div>
+        ))
+      }
+    </div>
+    <div class="flex justify-end w-full">
+      <p class="text-sm">
+        <Image
+          src="/tomatoe.svg"
+          alt="tomatoe"
+          width={30}
+          height={30}
+          class="inline-block self-center items-center hover:animate-spin"
+        />{" "}
+        {stars} ({starsCount})
+      </p>
     </div>
   </div>
 </a>

@@ -1,0 +1,15 @@
+---
+import PlatformItem from "./PlatformItem.astro";
+
+export interface SeasonItemProps {
+    platforms: any;
+}
+
+const { platforms } = Astro.props as SeasonItemProps;
+---
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    {platforms?.map((platform : any) => (
+        <PlatformItem key={platform.id} platform={platform} />
+    ))}
+</div>

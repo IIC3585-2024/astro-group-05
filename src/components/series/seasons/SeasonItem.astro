@@ -1,0 +1,12 @@
+---
+export interface SeasonItemProps {
+    season: any;
+}
+
+const { season } = Astro.props as SeasonItemProps;
+---
+
+<tr>
+    <td class="px-4 py-3 whitespace-nowrap">{season.seasonNumber}</td>
+    <td class="px-4 py-3 whitespace-nowrap">{season.episodeCount}</td>
+</tr>
