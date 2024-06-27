@@ -52,3 +52,33 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+# About the project
+
+This project allows you to view information about different tv series, where you can add new series, search for series and add reviews
+
+To run the project locally you need an .env file with the following variables
+
+
+
+```sh
+SUPABASE_URL
+SUPABASE_ANON_KEY
+SUPABASE_STORAGE
+```
+
+
+# Tools used in this project
+
+
+- Astro
+- Tailwind CSS
+- TypeScript
+- Supabase
+- copilot
+- chatgpt
+- python for scraping data
+
+# Data of the project
+
+- the data of the project was obtained from the justwatch website and tvmaze api
